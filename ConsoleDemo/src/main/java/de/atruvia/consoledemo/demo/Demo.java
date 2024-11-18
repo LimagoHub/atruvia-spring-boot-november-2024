@@ -16,7 +16,7 @@ import javax.inject.Named;
 
 
 //@Named
-@Component // Stellt die Klasse unter die Verwaltung von Spring
+//@Component // Stellt die Klasse unter die Verwaltung von Spring
 @Scope("singleton") // Default
 @Lazy(false)
 //@Scope("prototype") // Erzeugt bei Bedarf ein NEUES Objekt
