@@ -1,12 +1,17 @@
-package de.atruvia.webapp.presentation.query;
+package de.atruvia.webapp.presentation.v1;
 
 import de.atruvia.webapp.presentation.dto.PersonDto;
+import de.atruvia.webapp.presentation.mapper.PersonDtoMapper;
+import de.atruvia.webapp.service.PersonService;
+import de.atruvia.webapp.service.PersonenServiceException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +24,13 @@ import java.util.UUID;
 @RequestMapping("/v1/personen")
 
 @RequestScope
+@RequiredArgsConstructor
+@Slf4j
 public class PersonQueryController {
 
 
+    private final PersonService personService;
+    private final PersonDtoMapper mapper;
 
     @Operation(summary = "Liefert eine Person")
     @ApiResponses(value = {
@@ -37,30 +46,20 @@ public class PersonQueryController {
 
 
     @GetMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<PersonDto> gibMichPerson(@PathVariable UUID id) {
-        if(id.toString().endsWith("7"))
-            return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(PersonDto.builder().id(id).vorname("John").nachname("doe").build());
+    public ResponseEntity<PersonDto> gibMichPerson(@PathVariable UUID id) throws PersonenServiceException {
+
+        return ResponseEntity.of(personService.findeAnhandId(id).map(mapper::convert));
     }
 
     @GetMapping(path = "", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Iterable<PersonDto>> gibMichAlle(
             @RequestParam(required = false, defaultValue = "") String vorname,
             @RequestParam(required = false, defaultValue = "") String name
-    ) {
+    ) throws PersonenServiceException{
 
-        System.out.printf("Vorname = '%s', Nachname = '%s'\n", vorname, name);
-        var list = List.of(
-                PersonDto.builder().id(UUID.randomUUID()).vorname("John").nachname("Doe").build()
-                , PersonDto.builder().id(UUID.randomUUID()).vorname("John").nachname("Wayne").build()
-                , PersonDto.builder().id(UUID.randomUUID()).vorname("John").nachname("Rambo").build()
-                , PersonDto.builder().id(UUID.randomUUID()).vorname("John").nachname("McClaine").build()
-                , PersonDto.builder().id(UUID.randomUUID()).vorname("John").nachname("Wick").build()
-                , PersonDto.builder().id(UUID.randomUUID()).vorname("John Boy").nachname("Walton").build()
+        log.warn(String.format("Vorname = '%s', Nachname = '%s'\n", vorname, name));
 
-
-        );
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(mapper.convert(personService.findeAlle()));
     }
 
     @PostMapping(value = "/scripts/toupper", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

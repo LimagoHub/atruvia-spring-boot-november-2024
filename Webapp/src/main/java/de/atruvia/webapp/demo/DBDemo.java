@@ -17,6 +17,6 @@ public class DBDemo {
 
     @PostConstruct
     public void init() {
-        personRepository.fritz().forEach(System.out::println);
+        personRepository.persist(PersonEntity.builder().id(UUID.randomUUID()).vorname("Jane").nachname("Mustermann").build());
     }
 }

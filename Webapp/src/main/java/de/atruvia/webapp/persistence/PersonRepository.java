@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.UUID;
 
-public interface PersonRepository extends CrudRepository<PersonEntity, UUID> {
+public interface PersonRepository extends CrudRepository<PersonEntity, UUID>, CustomPersonRepository {
 
     // partielles Update daher HTTP-Verb PATCH
     @Query("update PersonEntity p set  p.vorname=:vorname  where p.id=:id")
