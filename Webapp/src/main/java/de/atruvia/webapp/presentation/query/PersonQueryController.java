@@ -1,24 +1,26 @@
 package de.atruvia.webapp.presentation.query;
 
-import de.atruvia.webapp.presentation.PersonDto;
-
+import de.atruvia.webapp.presentation.dto.PersonDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.RequestScope;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/personen")
+@RequestMapping("/v1/personen")
+
+@RequestScope
 public class PersonQueryController {
+
 
 
     @Operation(summary = "Liefert eine Person")
@@ -59,6 +61,12 @@ public class PersonQueryController {
 
         );
         return ResponseEntity.ok(list);
+    }
+
+    @PostMapping(value = "/scripts/toupper", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PersonDto>  machVornameGross(@Valid @RequestBody PersonDto personDto) {
+        personDto.setVorname(personDto.getVorname().toUpperCase());
+        return ResponseEntity.ok(personDto);
     }
 
 

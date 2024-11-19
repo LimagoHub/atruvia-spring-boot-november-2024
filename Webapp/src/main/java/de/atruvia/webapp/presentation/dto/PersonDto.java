@@ -1,4 +1,4 @@
-package de.atruvia.webapp.presentation;
+package de.atruvia.webapp.presentation.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
