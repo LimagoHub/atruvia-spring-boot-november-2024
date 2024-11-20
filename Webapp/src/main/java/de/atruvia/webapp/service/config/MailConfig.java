@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@PropertySource(value= "classpath:mail.yaml", factory = YamlPropertySourceFactory.class)
+@PropertySource(value= "classpath:mail.yml", factory = YamlPropertySourceFactory.class)
 @ConfigurationProperties(prefix = "mail")
 @Setter
 public class MailConfig {
