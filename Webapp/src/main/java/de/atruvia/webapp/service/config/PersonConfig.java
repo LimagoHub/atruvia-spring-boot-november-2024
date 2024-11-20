@@ -1,16 +1,10 @@
-package de.atruvia.webapp.service;
+package de.atruvia.webapp.service.config;
 
 
-import de.atruvia.webapp.persistence.PersonRepository;
-import de.atruvia.webapp.service.internal.PersonServiceImpl;
-import de.atruvia.webapp.service.mapper.PersonMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Scope;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
