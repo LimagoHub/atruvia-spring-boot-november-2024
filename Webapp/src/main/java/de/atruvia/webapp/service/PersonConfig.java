@@ -7,6 +7,8 @@ import de.atruvia.webapp.service.mapper.PersonMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,8 @@ public class PersonConfig {
 
 
     @Bean
+    //@Lazy
+    //@Scope("prototype")
     @Qualifier("antipathen")
     public List<String> antipathen() {
         return List.of("Attila","Peter","Paul","Mary");

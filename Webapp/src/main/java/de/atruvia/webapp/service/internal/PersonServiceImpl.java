@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(rollbackFor = PersonenServiceException.class, isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
+@Transactional(rollbackFor = {PersonenServiceException.class}, isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
 public class PersonServiceImpl implements PersonService {
 
     private final PersonRepository personRepository;
@@ -38,14 +38,17 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public void speichern(final Person person) throws PersonenServiceException {
         try {
-            checkPerson(person);
-
-            personRepository.save(personMapper.convert(person));
+            speichernImpl(person);
         } catch (RuntimeException e) {
-            throw new PersonenServiceException("Es ist ein Fehler aufgetreten", e);
+           throw new PersonenServiceException("Es ist ein Fehler aufgetreten", e);
         }
     }
 
+    private void speichernImpl(final Person person) throws PersonenServiceException {
+        checkPerson(person);
+
+        personRepository.save(personMapper.convert(person));
+    }
 
 
     @Override
@@ -54,8 +57,7 @@ public class PersonServiceImpl implements PersonService {
             if(! personRepository.existsById(person.getId())) {
                 return false;
             }
-            checkPerson(person);
-            personRepository.save(personMapper.convert(person));
+            speichernImpl(person);
             return true;
         } catch (RuntimeException e) {
             throw new PersonenServiceException("Es ist ein Fehler aufgetreten",e);
@@ -107,5 +109,11 @@ public class PersonServiceImpl implements PersonService {
 
         if(blacklist.contains(person.getVorname()))
             throw new PersonenServiceException("Antipath");
+
+        /*
+        if(blacklistService.isBlacklisted(person))
+            throw new PersonenServiceException("Antipath");
+
+         */
     }
 }

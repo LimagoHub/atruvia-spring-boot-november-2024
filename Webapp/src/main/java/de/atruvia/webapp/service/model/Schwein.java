@@ -16,6 +16,10 @@ public class Schwein {
     private String name;
     private int gewicht;
 
+    public void taufen(String name){
+
+        setName(name);
+    }
     public void fuettern() {
         setGewicht(getGewicht() +1);
     }
