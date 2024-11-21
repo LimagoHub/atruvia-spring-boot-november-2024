@@ -13,6 +13,6 @@ public class CalcClient {
 
     public void run() {
 
-        System.out.println(calculator.add(10, 20));
+        System.out.println(calculator.sub(10, 20));
     }
 }
