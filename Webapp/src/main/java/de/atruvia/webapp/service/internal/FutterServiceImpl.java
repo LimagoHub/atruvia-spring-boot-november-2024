@@ -16,7 +16,7 @@ public class FutterServiceImpl {
 
     @EventListener
     public void handle(SchweinErfasstEvent s){
-        futterBestellen();
+        futterBestellen();// Kafka call
     }
 
     @EventListener
