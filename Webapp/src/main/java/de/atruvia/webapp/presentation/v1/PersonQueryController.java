@@ -4,6 +4,7 @@ import de.atruvia.webapp.presentation.dto.PersonDto;
 import de.atruvia.webapp.presentation.mapper.PersonDtoMapper;
 import de.atruvia.webapp.service.PersonService;
 import de.atruvia.webapp.service.PersonenServiceException;
+import de.atruvia.webapp.service.internal.CustomSpringEvent;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +33,7 @@ public class PersonQueryController {
 
     private final PersonService personService;
     private final PersonDtoMapper mapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Operation(summary = "Liefert eine Person")
     @ApiResponses(value = {
@@ -57,6 +60,7 @@ public class PersonQueryController {
             @RequestParam(required = false, defaultValue = "") String name
     ) throws PersonenServiceException{
 
+        publishCustomEvent("Hallo");
         log.warn(String.format("Vorname = '%s', Nachname = '%s'\n", vorname, name));
 
         return ResponseEntity.ok(mapper.convert(personService.findeAlle()));
@@ -67,6 +71,10 @@ public class PersonQueryController {
         personDto.setVorname(personDto.getVorname().toUpperCase());
         return ResponseEntity.ok(personDto);
     }
-
+    public void publishCustomEvent(final String message) {
+        System.out.println("Publishing custom event. ");
+        CustomSpringEvent customSpringEvent = new CustomSpringEvent( message);
+        eventPublisher.publishEvent(customSpringEvent);
+    }
 
 }

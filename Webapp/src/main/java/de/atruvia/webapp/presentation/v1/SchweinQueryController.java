@@ -1,6 +1,7 @@
 package de.atruvia.webapp.presentation.v1;
 
 
+import de.atruvia.webapp.aspects.Dozent;
 import de.atruvia.webapp.presentation.dto.SchweinDTO;
 import de.atruvia.webapp.presentation.mapper.SchweinDTOMapper;
 import de.atruvia.webapp.service.SchweinService;
@@ -18,6 +19,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/v1/schweine")
 @RequiredArgsConstructor
+
+@Dozent
 public class SchweinQueryController {
 
     private final SchweinService schweinService;

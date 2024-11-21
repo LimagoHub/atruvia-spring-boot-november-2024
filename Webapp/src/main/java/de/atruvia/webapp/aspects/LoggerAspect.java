@@ -14,14 +14,15 @@ import org.springframework.stereotype.Component;
 public class LoggerAspect {
 
 
-    @Before(value="execution(public * de.atruvia.webapp.presentation.v1.PersonQueryController.*(..))")
+
+    @Before("Pointcuts.personenQueryControllerMethods()")
     public void logAdvice(final JoinPoint joinPoint) {
         log.warn(String.format(
                 "##################### Methode  %s wurde aufgerufen ########################"
                 , joinPoint.getSignature().getName()));
     }
 
-    @AfterReturning(value="execution(public * de.atruvia.webapp.presentation.v1.PersonQueryController.*(..)) ", returning = "result")
+    @AfterReturning(value="Pointcuts.personenQueryControllerMethods()", returning = "result")
     public void logAfterReturning(final JoinPoint joinPoint, Object result) {
         log.warn(String.format("############################# Afterreturning: %s ######################", joinPoint.getSignature().getName()));
         log.warn(String.format("############################# Result: %s ######################", result.toString()));
@@ -43,6 +44,20 @@ public class LoggerAspect {
     @Around(value="execution(public * de.atruvia.webapp.presentation.v1.PersonQueryController.*(..)) ")
     public Object around(final ProceedingJoinPoint joinPoint) throws Throwable {
         return joinPoint.proceed();
+    }
+
+    @Before("Pointcuts.serviceMethods()")
+    public void logAdviceServices(final JoinPoint joinPoint) {
+        log.warn(String.format(
+                "##################### Methode  %s wurde aufgerufen ########################"
+                , joinPoint.getSignature().getName()));
+    }
+
+    @Before("Pointcuts.dozentMethods()")
+    public void logDozentServices(final JoinPoint joinPoint) {
+        log.warn(String.format(
+                "##################### Methode  %s wurde aufgerufen ########################"
+                , joinPoint.getSignature().getName()));
     }
 
 }

@@ -4,10 +4,14 @@ package de.atruvia.webapp.service.internal;
 import de.atruvia.webapp.persistence.SchweinRepository;
 import de.atruvia.webapp.service.SchweinService;
 import de.atruvia.webapp.service.SchweineServiceException;
+import de.atruvia.webapp.service.event.SchweinErfasstEvent;
+import de.atruvia.webapp.service.event.SchweinGeandertEvent;
 import de.atruvia.webapp.service.mapper.SchweinMapper;
 import de.atruvia.webapp.service.model.Schwein;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -25,7 +29,7 @@ public class SchweinServiceImpl implements SchweinService {
 
     private final SchweinMapper schweinMapper;
 
-
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     /*
             Parameter null -> PSE
@@ -38,10 +42,11 @@ public class SchweinServiceImpl implements SchweinService {
             happy day -> person wird an repo übergeben
          */
     @Override
-    public void speichern(final Schwein person) throws SchweineServiceException {
+    public void speichern(final Schwein schwein) throws SchweineServiceException {
         try {
-            checkPerson(person);
-            schweinRepository.save(schweinMapper.convert(person));
+            checkPerson(schwein);
+            schweinRepository.save(schweinMapper.convert(schwein));
+            applicationEventPublisher.publishEvent(new SchweinErfasstEvent(schwein));
         } catch (RuntimeException e) {
             throw new SchweineServiceException("Es ist ein Fehler aufgetreten",e);
         }
@@ -57,6 +62,7 @@ public class SchweinServiceImpl implements SchweinService {
             }
             checkPerson(person);
             schweinRepository.save(schweinMapper.convert(person));
+            applicationEventPublisher.publishEvent(new SchweinGeandertEvent(person));
             return true;
         } catch (RuntimeException e) {
             throw new SchweineServiceException("Es ist ein Fehler aufgetreten",e);
